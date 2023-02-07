@@ -28,10 +28,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.10")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     testImplementation("org.apache.groovy:groovy:4.0.8")
-
     testImplementation("org.spockframework:spock-core:${property("spockVersion")}")
     testImplementation("org.spockframework:spock-spring:${property("spockVersion")}")
     testImplementation("org.testcontainers:spock")
@@ -56,3 +54,36 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+sourceSets {
+    create("integration") {
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+    }
+}
+
+val integrationImplementation by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+    extendsFrom(configurations.testImplementation.get())
+}
+
+configurations["integrationRuntimeOnly"].extendsFrom(configurations.runtimeOnly.get())
+
+
+val integrationTest = task<Test>("integrationTest") {
+    description = "Runs integration tests."
+    group = "verification"
+
+    testClassesDirs = sourceSets["integration"].output.classesDirs
+    classpath = sourceSets["integration"].runtimeClasspath
+    shouldRunAfter("test")
+
+    useJUnitPlatform()
+
+    testLogging {
+        events("passed")
+    }
+}
+
+tasks.check { dependsOn(integrationTest) }
+
