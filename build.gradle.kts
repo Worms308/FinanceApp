@@ -17,10 +17,7 @@ repositories {
 }
 
 extra["testcontainersVersion"] = "1.17.6"
-
-project.ext {
-    set("spockVersion", "2.4-M1-groovy-4.0")
-}
+extra["spockVersion"] = "2.4-M1-groovy-4.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
@@ -36,6 +33,8 @@ dependencies {
     testImplementation("org.testcontainers:elasticsearch")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.rest-assured:spring-web-test-client:3.2.0")
+    testImplementation("org.testcontainers:spock:${property("testcontainersVersion")}")
 }
 
 dependencyManagement {
