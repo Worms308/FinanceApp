@@ -5,11 +5,12 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.repository.Repository
+import java.util.Optional
 
 internal interface FinInstrumentRepository : Repository<FinInstrumentPersistence, String> {
 
     fun findAll(pageable: Pageable): Page<FinInstrumentPersistence>
-
+    fun findById(id: String): Optional<FinInstrumentPersistence>
     fun save(finInstrumentPersistence: FinInstrumentPersistence): FinInstrumentPersistence
 }
 
@@ -33,4 +34,7 @@ internal class InMemoryFinInstrumentRepository : FinInstrumentRepository {
         return map[finInstrumentPersistence.id]!!
     }
 
+    override fun findById(id: String): Optional<FinInstrumentPersistence> {
+        return Optional.ofNullable(map[id])
+    }
 }

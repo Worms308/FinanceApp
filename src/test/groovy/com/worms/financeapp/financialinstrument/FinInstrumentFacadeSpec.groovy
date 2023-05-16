@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest
 class FinInstrumentFacadeSpec extends UnitSpec {
 
     private FinInstrumentFacade instrumentFacade = new FinInstrumentConfig().financialInstrumentFacade()
+    private FinInstrumentPayload defaultPayload = new FinInstrumentPayload("Test instrument")
 
     def "should get empty list of instruments when none was added before"() {
         given:
@@ -24,7 +25,7 @@ class FinInstrumentFacadeSpec extends UnitSpec {
 
     def "should create new instrument to the repository"() {
         given:
-            def instrument = buildDefaultFinInstrumentPayload()
+            def instrument = defaultPayload
 
         when:
             def result = instrumentFacade.create(instrument)
@@ -32,9 +33,5 @@ class FinInstrumentFacadeSpec extends UnitSpec {
         then:
             result.isOk()
             result.entityId != null
-    }
-
-    private FinInstrumentPayload buildDefaultFinInstrumentPayload() {
-        new FinInstrumentPayload("Test instrument")
     }
 }

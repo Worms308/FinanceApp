@@ -6,6 +6,7 @@ import com.worms.financeapp.financialinstrument.dto.FinInstrumentResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 internal class FinInstrumentFacade(
     private val repository: FinInstrumentRepository
@@ -23,6 +24,12 @@ internal class FinInstrumentFacade(
         CreateResult.success(result.id)
     } catch (ex: Exception) {
         CreateResult.error(ex.message)
+    }
+
+    fun findById(id: String): FinInstrumentResponse? {
+        return repository.findById(id)
+            .map { it.toDomain().toResponse() }
+            .getOrNull()
     }
 
     private fun convertPayloadToDomainObject(finInstrumentPayload: FinInstrumentPayload): FinInstrument {
